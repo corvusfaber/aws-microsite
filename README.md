@@ -1,4 +1,3 @@
-Certainly! Here's a sample `README.md` file for your GitHub project to set up AWS infrastructure for a microsite using Terraform:
 
 ```markdown
 # AWS Microsite Infrastructure with Terraform
