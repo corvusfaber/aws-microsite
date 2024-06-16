@@ -3,15 +3,15 @@ Certainly! Here's a sample `README.md` file for your GitHub project to set up AW
 ```markdown
 # AWS Microsite Infrastructure with Terraform
 
-This project sets up the necessary AWS infrastructure for hosting a microsite using Terraform. It includes configurations for various AWS services such as VPC, EC2, S3, RDS, and more.
+This project sets up the necessary AWS infrastructure for hosting a microsite using Terraform.
 
 ## Prerequisites
 
 Before you begin, ensure you have the following installed on your local machine:
 
-- [Terraform](https://www.terraform.io/downloads.html) (version 0.12 or later)
-- [AWS CLI](https://aws.amazon.com/cli/)
-- [Git](https://git-scm.com/)
+- [Terraform]
+- [AWS CLI]
+- [Git]
 
 Additionally, you need to configure your AWS credentials. You can do this by running:
 
@@ -64,25 +64,20 @@ aws configure
 
 The Terraform configuration sets up the following AWS resources:
 
-- **VPC**: A Virtual Private Cloud to host the infrastructure.
-- **EC2 Instances**: Virtual machines for the web servers.
 - **S3 Bucket**: Storage for static assets.
-- **RDS**: A Relational Database Service instance for the microsite's database.
-- **Security Groups**: Firewall rules to control inbound and outbound traffic.
-- **IAM Roles and Policies**: Permissions for various AWS services.
+- **Cloudfront distribution**: Accelerates and secures the delivery of the static website hosted on S3, ensuring fast, reliable, and global access for users.
 
 ## Directory Structure
-
+ 
 ```
 aws-microsite-terraform/
-├── main.tf              # Main configuration file
-├── variables.tf         # Variable definitions
-├── outputs.tf           # Output definitions
-├── vpc.tf               # VPC resource definitions
-├── ec2.tf               # EC2 instance definitions
-├── s3.tf                # S3 bucket definitions
-├── rds.tf               # RDS instance definitions
-└── security_groups.tf   # Security groups definitions
+├── main.tf                        # Main configuration file
+├── variables.tf                   # Variable definitions
+├── outputs.tf                     # Output definitions
+├── s3.tf                          # S3 bucket definitions
+├── bucket_infrastructure.tf       # Output definitions
+├── cloudfront_distriution.tf      # S3 bucket definitions
+
 ```
 
 ## Cleanup
@@ -105,7 +100,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Contact
 
-For any questions or support, please open an issue or contact the project maintainer at [your-email@example.com](mailto:your-email@example.com).
+For any questions or support, please open an issue or contact the project maintainer at [malcolmfrsr@gmail.com](mailto:malcolmfrsr@gmail.com).
 
 ```
 
