@@ -1,6 +1,5 @@
 
-```markdown
-# AWS Microsite Infrastructure with Terraform
+## AWS Microsite Infrastructure with Terraform
 
 This project sets up the necessary AWS infrastructure for hosting a microsite using Terraform.
 
