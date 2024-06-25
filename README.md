@@ -31,6 +31,7 @@ aws configure
 2. **Initialize Terraform**
 
    Initialize Terraform to install the necessary providers and modules:
+   *FYI: you need to replace the backend with your own dynamodb and s3 bucket.
 
    ```bash
    terraform init
