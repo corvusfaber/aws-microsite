@@ -5,10 +5,14 @@ terraform {
       version = "~> 5.0"
     }
   }
-}
 
-provider "aws" {
-  region = "eu-west-1"
+   backend "s3" {
+    bucket         = "mf-corvus-tfstate"
+    key            = "state/terraform.tfstate"
+    region         = "eu-west-1"
+    encrypt        = true
+    dynamodb_table = "mf-corvus-tf-lockId"
+  }
 }
 
 module "mf-website" {
