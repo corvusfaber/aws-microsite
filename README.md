@@ -97,6 +97,4 @@ Contributions are welcome! Please open an issue or submit a pull request for any
 
 For any questions or support, please open an issue or contact the project maintainer at [malcolmfrsr@gmail.com](mailto:malcolmfrsr@gmail.com).
 
-```
-
 Feel free to customize this `README.md` to better suit your project's specifics and any additional details you wish to include.
