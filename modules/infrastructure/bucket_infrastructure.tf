@@ -22,7 +22,7 @@ data "aws_iam_policy_document" "allow_access_from_another_account" {
   statement {
     principals {
       type        = "AWS"
-      identifiers = ["arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity E1UH4UX6RASB3U"] 
+      identifiers = [aws_cloudfront_origin_access_identity.s3_distribution.iam_arn] 
     }
 
     actions = [

@@ -17,9 +17,3 @@ variable "start_page_dir" {
 variable "error_page" {
   type = string
 }
-
-variable "origin_access_id" {
-  type = string
-}
-
-
