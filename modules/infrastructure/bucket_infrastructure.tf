@@ -73,3 +73,40 @@ resource "aws_s3_object" "webindex" {
   # etag = "${md5(file("path/to/file"))}"
   etag = filemd5(var.start_page_dir)
 }
+
+resource "aws_s3_bucket_notification" "file_bucket_notification" {
+  bucket = aws_s3_bucket.web-repository.id
+
+  queue {
+    events = ["s3:ObjectCreated:*"]
+    filter_prefix = "uploads/"
+    queue_arn = aws_sqs_queue.file_processing_queue.arn
+  }
+
+  depends_on = [aws_sqs_queue_policy.file_processing_queue_policy]
+}
+
+resource "aws_sqs_queue" "file_processing_queue" {
+  name = "file-processing-queue"
+}
+
+resource "aws_sqs_queue_policy" "file_processing_queue_policy" {
+  queue_url = aws_sqs_queue.file_processing_queue.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = "*",
+        Action = "SQS:SendMessage",
+        Resource = aws_s3_bucket.web-repository.arn
+        Condition = {
+          ArnLike = {
+            "aws:SourceArn" = aws_s3_bucket.web-repository.arn
+          }
+        }
+      }
+    ]
+  })
+}
