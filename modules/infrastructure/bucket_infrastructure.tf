@@ -62,6 +62,18 @@ resource "aws_s3_bucket_website_configuration" "mf_s3_website_configuration" {
   }
 }
 
+resource "aws_s3_bucket_notification" "file_bucket_notification" {
+  bucket = aws_s3_bucket.web-repository.id
+
+  queue {
+    events = ["s3:ObjectCreated:*"]
+    filter_prefix = "uploads/"
+    queue_arn = aws_sqs_queue.file_processing_queue.arn
+  }
+
+  depends_on = [aws_sqs_queue_policy.file_processing_queue_policy]
+}
+
 resource "aws_s3_object" "webindex" {
   bucket = aws_s3_bucket.web-repository.id
   key    = var.start_page
@@ -74,18 +86,6 @@ resource "aws_s3_object" "webindex" {
   etag = filemd5(var.start_page_dir)
 }
 
-# 
-resource "aws_s3_bucket_notification" "file_bucket_notification" {
-  bucket = aws_s3_bucket.web-repository.id
-
-  queue {
-    events = ["s3:ObjectCreated:*"]
-    filter_prefix = "uploads/"
-    queue_arn = aws_sqs_queue.file_processing_queue.arn
-  }
-
-  depends_on = [aws_sqs_queue_policy.file_processing_queue_policy]
-}
 
 # The message queue
 resource "aws_sqs_queue" "file_processing_queue" {
