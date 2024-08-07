@@ -74,6 +74,7 @@ resource "aws_s3_object" "webindex" {
   etag = filemd5(var.start_page_dir)
 }
 
+# 
 resource "aws_s3_bucket_notification" "file_bucket_notification" {
   bucket = aws_s3_bucket.web-repository.id
 
@@ -86,27 +87,87 @@ resource "aws_s3_bucket_notification" "file_bucket_notification" {
   depends_on = [aws_sqs_queue_policy.file_processing_queue_policy]
 }
 
+# The message queue
 resource "aws_sqs_queue" "file_processing_queue" {
   name = "file-processing-queue"
 }
 
 resource "aws_sqs_queue_policy" "file_processing_queue_policy" {
   queue_url = aws_sqs_queue.file_processing_queue.id
+  policy = data.aws_iam_policy_document.sqs_queue_policy.json
+}
 
-  policy = jsonencode({
+data "aws_iam_policy_document" "sqs_queue_policy" {
+  statement {
+    actions   = ["SQS:SendMessage"]
+    resources = [aws_sqs_queue.file_processing_queue.arn]
+
+    condition {
+      test     = "ArnLike"
+      variable = "aws:SourceArn"
+      values  = [aws_s3_bucket.web-repository.arn]
+    }
+
+    principals {
+      type        = "Service"
+      identifiers = ["s3.amazonaws.com"]
+    }
+  }
+}
+
+
+# Lambda
+resource "aws_lambda_function" "file_processor" {
+  filename         = "index.zip" 
+  function_name    = "file-processor-function"
+  role             = aws_iam_role.lambda_execution_role.arn
+  handler          = "index.handler"  # Update according to your handler method
+  runtime          = "python3.8"       # Update according to your runtime
+
+  environment {
+    variables = {
+      S3_BUCKET = aws_s3_bucket.web-repository.bucket
+    }
+  }
+
+  depends_on = [aws_iam_role_policy_attachment.lambda_policy]
+}
+
+resource "aws_iam_role" "lambda_execution_role" {
+  name = "lambda_execution_role"
+
+  assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
       {
         Effect = "Allow",
-        Principal = "*",
-        Action = "SQS:SendMessage",
-        Resource = aws_s3_bucket.web-repository.arn
-        Condition = {
-          ArnLike = {
-            "aws:SourceArn" = aws_s3_bucket.web-repository.arn
-          }
-        }
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        },
+        Action = "sts:AssumeRole"
       }
     ]
   })
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_policy" {
+  role       = aws_iam_role.lambda_execution_role.name
+  policy_arn  = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_s3_sqs_policy" {
+  role       = aws_iam_role.lambda_execution_role.name
+  policy_arn  = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_sqs_policy" {
+  role       = aws_iam_role.lambda_execution_role.name
+  policy_arn  = "arn:aws:iam::aws:policy/AmazonSQSFullAccess"
+}
+
+# Lambda event source mapping
+resource "aws_lambda_event_source_mapping" "file_processing_mapping" {
+  event_source_arn = aws_sqs_queue.file_processing_queue.arn
+  function_name    = aws_lambda_function.file_processor.arn
+  enabled          = true
 }
