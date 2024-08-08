@@ -15,6 +15,10 @@ terraform {
   }
 }
 
+provider "aws" {
+  region = "eu-west-1"
+}
+
 module "mf-website" {
   source = "./modules/infrastructure"
 
