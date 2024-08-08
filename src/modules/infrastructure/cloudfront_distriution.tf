@@ -14,7 +14,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     origin_id   = aws_s3_bucket.web-repository.id
     domain_name = aws_s3_bucket.web-repository.bucket_regional_domain_name
     s3_origin_config {
-      origin_access_identity = var.origin_access_id
+      origin_access_identity = aws_cloudfront_origin_access_identity.s3_distribution.cloudfront_access_identity_path
     }
   }
 
@@ -102,4 +102,9 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   viewer_certificate {
     cloudfront_default_certificate = true
   }
+}
+
+resource "aws_cloudfront_origin_access_identity" "s3_distribution" {
+
+  comment = "New accessidentiy."
 }
