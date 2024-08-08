@@ -7,11 +7,11 @@ terraform {
   }
 
   backend "s3" {
-    bucket  = "mlclmfrsr-tfstate"
+    bucket         = "mlclmfrsr-tfstate"
     dynamodb_table = "terraform-state-lock-dynamo"
-    key     = "state/terraform.tfstate"
-    region  = "eu-west-1"
-    encrypt = true
+    key            = "state/terraform.tfstate"
+    region         = "eu-west-1"
+    encrypt        = true
   }
 }
 
