@@ -67,11 +67,33 @@ resource "aws_s3_bucket_notification" "file_bucket_notification" {
 
   queue {
     events = ["s3:ObjectCreated:*"]
-    filter_prefix = "uploads/"
+    filter_prefix = "website/images/"
     queue_arn = aws_sqs_queue.file_processing_queue.arn
   }
 
   depends_on = [aws_sqs_queue_policy.file_processing_queue_policy]
+}
+
+# locals
+locals {
+  files = {
+    "images/image1.png" = "website/images/image1.png",
+    "images/image2.png" = "website/images/image2.png",
+    "images/image3.png" = "website/images/image3.png",
+    "images/image4.png" = "website/images/image4.png",
+    "images/image5.png" = "website/images/image5.png",
+    "images/image6.png" = "website/images/image6.png",
+    "images/image7.png" = "website/images/image7.png",
+  }
+}
+
+resource "aws_s3_object" "images" {
+  for_each = local.files
+
+  bucket = aws_s3_bucket.web-repository.id
+  key    = each.key
+  source = each.value
+  acl    = "private"
 }
 
 resource "aws_s3_object" "webindex" {
