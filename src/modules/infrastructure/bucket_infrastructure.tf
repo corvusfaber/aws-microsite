@@ -69,6 +69,11 @@ locals {
     "images/image1.png" = "website/images/image1.png",
     "images/image2.png" = "website/images/image2.png",
     "images/image3.png" = "website/images/image3.png",
+    "images/image4.png" = "website/images/image4.png",
+    "images/image5.png" = "website/images/image5.png",
+    "images/image6.png" = "website/images/image6.png",
+    "images/image7.png" = "website/images/image7.png",
+    "images/image8.png" = "website/images/image8.png",
   }
 }
 
