@@ -81,7 +81,7 @@ aws-microsite-terraform/
 
 ## Cleanup
 
-To destroy the infrastructure and avoid incurring charges, run:
+To destroy the infrastructure and avoid incurring charges, run :
 
 ```bash
 terraform destroy
